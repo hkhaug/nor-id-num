@@ -25,14 +25,14 @@ namespace NinEngine
         protected void AssertDayAndMonthIsValid(bool isDNumber)
         {
             bool ok = false;
-            int mm = int.Parse(Number.Substring(2, 2));
+            int mm = Int32.Parse(Number.Substring(2, 2));
             if ((mm >= 1) && (mm <= 12))
             {
-                int ddD = int.Parse(Number.Substring(0, 2));
+                int ddD = Int32.Parse(Number.Substring(0, 2));
                 int dd = isDNumber ? ddD - 40 : ddD;
                 if (dd >= 1)
                 {
-                    int yy = int.Parse(Number.Substring(4, 2));
+                    int yy = Int32.Parse(Number.Substring(4, 2));
                     if (dd <= DateTime.DaysInMonth(1900 + yy, mm) || (dd <= DateTime.DaysInMonth(2000 + yy, mm)))
                     {
                         ok = true;
@@ -41,15 +41,15 @@ namespace NinEngine
             }
             if (!ok)
             {
-                string msg = string.Format("{0} '{1}' er ikke en gyldig dato i formen DDMMÅÅ{2}.", Name, Number.Substring(0, 6), isDNumber ? " (første siffer økt med 4)" : string.Empty);
+                string msg = String.Format("{0} '{1}' er ikke en gyldig dato i formen DDMMÅÅ{2}.", Name, Number.Substring(0, 6), isDNumber ? " (første siffer økt med 4)" : String.Empty);
                 throw new NinException(Statuscode.BadDate, msg);
             }
         }
 
         protected int AssertYearAndIndividualNumberCombinationIsValid()
         {
-            int yy = int.Parse(Number.Substring(4, 2));
-            int individual = int.Parse(Number.Substring(6, 3));
+            int yy = Int32.Parse(Number.Substring(4, 2));
+            int individual = Int32.Parse(Number.Substring(6, 3));
 
             if (individual <= 499)
             {
@@ -71,18 +71,18 @@ namespace NinEngine
                 return 2000 + yy;
             }
 
-            string msg = string.Format("{0} '{1}' har ikke en gyldig kombinasjon av årstall og individnummer.", Name, Number);
+            string msg = String.Format("{0} '{1}' har ikke en gyldig kombinasjon av årstall og individnummer.", Name, Number);
             throw new NinException(Statuscode.BadYearAndIndividualNumberCombination, msg);
         }
 
         protected void AssertDateIsValid(int year, bool isDNumber)
         {
-            int ddD = int.Parse(Number.Substring(0, 2));
+            int ddD = Int32.Parse(Number.Substring(0, 2));
             int dd = isDNumber ? ddD - 40 : ddD;
-            int mm = int.Parse(Number.Substring(2, 2));
+            int mm = Int32.Parse(Number.Substring(2, 2));
             if ((mm < 1) || (mm > 12) || (dd < 1) || (dd > DateTime.DaysInMonth(year, mm)))
             {
-                string msg = string.Format("{0} '{1}' er ikke gyldig dag og måned for året {2}{3}.", Name, Number.Substring(0, 4), year, isDNumber ? " (første siffer økt med 4)" : string.Empty);
+                string msg = String.Format("{0} '{1}' er ikke gyldig dag og måned for året {2}{3}.", Name, Number.Substring(0, 4), year, isDNumber ? " (første siffer økt med 4)" : String.Empty);
                 throw new NinException(Statuscode.BadDate, msg);
             }
         }
@@ -98,17 +98,17 @@ namespace NinEngine
         {
             if (dateFrom < FirstPossible)
             {
-                string msg = string.Format("Fra-dato ({0}) kan ikke være tidligere enn {1}.", dateFrom, FirstPossible);
+                string msg = String.Format("Fra-dato ({0}) kan ikke være tidligere enn {1}.", dateFrom, FirstPossible);
                 throw new NinException(Statuscode.BadDate, msg);
             }
             if (dateTo > LastPossible)
             {
-                string msg = string.Format("Til-dato ({0}) kan ikke være senere enn {1}.", dateTo, LastPossible);
+                string msg = String.Format("Til-dato ({0}) kan ikke være senere enn {1}.", dateTo, LastPossible);
                 throw new NinException(Statuscode.BadDate, msg);
             }
             if (dateFrom > dateTo)
             {
-                string msg = string.Format("Fra-dato ({0}) kan ikke være senere enn til-dato ({1}).", dateFrom, dateTo);
+                string msg = String.Format("Fra-dato ({0}) kan ikke være senere enn til-dato ({1}).", dateFrom, dateTo);
                 throw new NinException(Statuscode.BadDate, msg);
             }
             string date = DateInRange(dateFrom, dateTo);
@@ -138,7 +138,7 @@ namespace NinEngine
             }
             else
             {
-                result = string.Empty;
+                result = String.Empty;
                 for (int index = 0; index < 6; ++index)
                 {
                     if (Wildcard == pattern[index])
@@ -160,7 +160,7 @@ namespace NinEngine
 
         protected static string MakeIndividualNo(string pattern)
         {
-            string result = string.Empty;
+            string result = String.Empty;
             for (int index = 0; index < 3; ++index)
             {
                 if (Wildcard == pattern[index])
@@ -197,7 +197,7 @@ namespace NinEngine
                 do
                 {
                     int individualNo = getIndividualMethod();
-                    number = string.Format("{0}{1:000}", date, individualNo);
+                    number = String.Format("{0}{1:000}", date, individualNo);
                     if (adjustMethod != null)
                     {
                         number = adjustMethod(number);
@@ -213,9 +213,22 @@ namespace NinEngine
 
         private static string DateInRange(DateTime from, DateTime to)
         {
-            int days = (to - from).Days + 1;
-            DateTime date = from.AddDays(Rand.Next(days));
-            return string.Format("{0:ddMMyy}", date);
+            int days = (to - @from).Days + 1;
+            DateTime date = @from.AddDays(Rand.Next(days));
+            return String.Format("{0:ddMMyy}", date);
         }
+
+        protected struct Range
+        {
+            public int FromYear, ToYear, FromIndividual, ToIndividual;
+        }
+
+        protected static Range[] Ranges =
+        {
+            new Range {FromYear = 1854, ToYear = 1899, FromIndividual = 500, ToIndividual = 749},
+            new Range {FromYear = 1900, ToYear = 1999, FromIndividual = 000, ToIndividual = 499},
+            new Range {FromYear = 1940, ToYear = 1999, FromIndividual = 900, ToIndividual = 999},
+            new Range {FromYear = 2000, ToYear = 2039, FromIndividual = 500, ToIndividual = 999}
+        };
     }
 }

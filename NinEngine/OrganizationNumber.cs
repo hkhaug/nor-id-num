@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace NinEngine
 {
     public class OrganizationNumber : IdNumberBase
     {
+        public const int PossibleLegalVariations = 18181818;
+
         private static readonly int[] WeightsForCheckDigit = { 3, 2, 7, 6, 5, 4, 3, 2 };
 
         public OrganizationNumber(string number) : base("Organisasjonsnummer", number)
@@ -114,6 +117,38 @@ namespace NinEngine
             {
                 resultChars[8] = pattern[8];
             }
+        }
+
+        public static IEnumerable<OrganizationNumber> ManyRandom(int count)
+        {
+            List<OrganizationNumber> candidates = AllPossible().ToList();
+            if (count >= candidates.Count)
+            {
+                return candidates;
+            }
+            List<OrganizationNumber> found = new List<OrganizationNumber>();
+            for (int itemNo = 0; itemNo < count; ++itemNo)
+            {
+                int itemIndex = Rand.Next(candidates.Count);
+                found.Add(candidates[itemNo]);
+                candidates.RemoveAt(itemIndex);
+            }
+            return found;
+        }
+
+        public static IEnumerable<OrganizationNumber> AllPossible()
+        {
+            List<OrganizationNumber> result = new List<OrganizationNumber>();
+            for (int number = 80000000; number < 100000000; ++number)
+            {
+                string numberStr = number.ToString();
+                char checkDigit = Modulo11(WeightsForCheckDigit, numberStr);
+                if ('-' != checkDigit)
+                {
+                    result.Add(new OrganizationNumber(numberStr + checkDigit));
+                }
+            }
+            return result;
         }
     }
 }

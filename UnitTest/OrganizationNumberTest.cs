@@ -1,4 +1,6 @@
-﻿using NinEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NinEngine;
 using NUnit.Framework;
 
 namespace UnitTest
@@ -6,6 +8,8 @@ namespace UnitTest
     [TestFixture]
     public class OrganizationNumberTest
     {
+        #region Test data
+
         private const string NumberNull = null;
         private const string NumberEmpty = "";
         private const string NumberShort = "87654321";
@@ -36,6 +40,11 @@ namespace UnitTest
         private const string NumberLegal1 = "801234569";
         private const string NumberLegal2 = "987654325";
 
+        #endregion Test data
+
+        #region Fast tests
+
+        [Category(TestCategory.Fast)]
         [Test]
         public void Construct_Null_ThrowsException()
         {
@@ -45,6 +54,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.IsNullOrEmpty, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void Construct_Empty_ThrowsException()
         {
@@ -54,6 +64,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.IsNullOrEmpty, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void Construct_TooShort_ThrowsException()
         {
@@ -63,6 +74,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadLength, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void Construct_TooLong_ThrowsException()
         {
@@ -72,6 +84,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadLength, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase(NumberNonDigit1)]
         [TestCase(NumberNonDigit2)]
         [TestCase(NumberNonDigit3)]
@@ -86,6 +99,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadCharacters, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase(NumberBadFirstDigit1)]
         [TestCase(NumberBadFirstDigit2)]
         [TestCase(NumberBadFirstDigit3)]
@@ -102,6 +116,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadFirstDigit, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase(NumberBadCheckDigit1)]
         [TestCase(NumberBadCheckDigit2)]
         [TestCase(NumberBadCheckDigit3)]
@@ -119,6 +134,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadCheckDigit, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase(NumberLegal1)]
         [TestCase(NumberLegal2)]
         public void Construct_Legal_PropertiesSet(string number)
@@ -128,6 +144,7 @@ namespace UnitTest
             Assert.AreEqual(number, on.Number);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase(NumberNull)]
         [TestCase(NumberEmpty)]
         [TestCase(NumberShort)]
@@ -161,6 +178,7 @@ namespace UnitTest
             Assert.IsNull(on);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase(NumberLegal1)]
         [TestCase(NumberLegal2)]
         public void Create_Legal_ReturnsObjectWithPropertiesSet(string number)
@@ -171,12 +189,14 @@ namespace UnitTest
             Assert.AreEqual(number, on.Number);
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void OneRandom_ReturnsValidNumber()
         {
             Assert.DoesNotThrow(() => OrganizationNumber.OneRandom());
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void OneRandom_TwoCallsReturnsDifferentNumbers()
         {
@@ -187,6 +207,7 @@ namespace UnitTest
             Assert.AreNotEqual(orgNo1.Number, orgNo2.Number);
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void OneRandom_NullPattern_ThrowsException()
         {
@@ -196,6 +217,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.PatternIsNullOrEmpty, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void OneRandom_EmptyPattern_ThrowsException()
         {
@@ -205,6 +227,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.PatternIsNullOrEmpty, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase("????????")]
         [TestCase("??????????")]
         public void OneRandom_BadLengthPattern_ThrowsException(string pattern)
@@ -215,6 +238,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadPatternLength, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase("C????????")]
         [TestCase("?d???????")]
         [TestCase("??Æ??????")]
@@ -229,6 +253,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadPattern, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void OneRandom_NoWildcardInPattern_ThrowsException()
         {
@@ -238,6 +263,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadPattern, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase("?????????")]
         [TestCase("8????????")]
         [TestCase("9????????")]
@@ -247,5 +273,41 @@ namespace UnitTest
         {
             Assert.DoesNotThrow(() => OrganizationNumber.OneRandom(pattern));
         }
+
+        #endregion Fast tests
+
+        #region Slow tests
+
+        [Category(TestCategory.Slow)]
+        [TestCase(123)]
+        [TestCase(987)]
+        public void ManyRandom_ReturnsRequestedNumber(int count)
+        {
+            List<OrganizationNumber> many = OrganizationNumber.ManyRandom(count).ToList();
+            Assert.IsNotNull(many);
+            Assert.AreEqual(count, many.Count);
+        }
+
+        [Category(TestCategory.Slow)]
+        [Test]
+        public void ManyRandom_TooManyRequested_ReturnsMaximumNumber()
+        {
+            List<OrganizationNumber> many = OrganizationNumber.ManyRandom(OrganizationNumber.PossibleLegalVariations + 123).ToList();
+            Assert.IsNotNull(many);
+            Assert.AreEqual(OrganizationNumber.PossibleLegalVariations, many.Count);
+        }
+
+        [Category(TestCategory.Slow)]
+        [Test]
+        public void AllPossible_ReturnsAllPossibleVariations()
+        {
+            List<OrganizationNumber> allPossible = OrganizationNumber.AllPossible().ToList();
+            Assert.IsNotNull(allPossible);
+            Assert.AreEqual(OrganizationNumber.PossibleLegalVariations, allPossible.Count);
+            Assert.AreEqual("800000009", allPossible[0].Number);
+            Assert.AreEqual("999999999", allPossible[OrganizationNumber.PossibleLegalVariations - 1].Number);
+        }
+
+        #endregion Slow tests
     }
 }

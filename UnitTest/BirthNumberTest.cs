@@ -1,4 +1,6 @@
-﻿using NinEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NinEngine;
 using NUnit.Framework;
 
 namespace UnitTest
@@ -6,6 +8,8 @@ namespace UnitTest
     [TestFixture]
     public class BirthNumberTest
     {
+        #region Test data
+
         private const string NumberNull = null;
         private const string NumberEmpty = "";
         private const string NumberShort = "1234567890";
@@ -44,6 +48,11 @@ namespace UnitTest
         private const string NumberBadSecondCheckDigit9 = "01020398769";
         private const string NumberLegal = "01020398767";
 
+        #endregion Test data
+
+        #region Fast tests
+
+        [Category(TestCategory.Fast)]
         [Test]
         public void Construct_Null_ThrowsException()
         {
@@ -53,6 +62,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.IsNullOrEmpty, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void Construct_Empty_ThrowsException()
         {
@@ -62,6 +72,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.IsNullOrEmpty, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void Construct_TooShort_ThrowsException()
         {
@@ -71,6 +82,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadLength, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void Construct_TooLong_ThrowsException()
         {
@@ -80,6 +92,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadLength, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase(NumberNonDigit1)]
         [TestCase(NumberNonDigit2)]
         [TestCase(NumberNonDigit3)]
@@ -94,6 +107,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadCharacters, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase(NumberBadDate1)]
         [TestCase(NumberBadDate2)]
         [TestCase(NumberBadDate3)]
@@ -109,6 +123,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadDate, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase(NumberBadYearAndIndividualNumberCombination)]
         public void Construct_BadYearAndIndividualNumberCombination_ThrowsException(string number)
         {
@@ -118,6 +133,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadYearAndIndividualNumberCombination, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase(NumberBadFirstCheckDigit1)]
         [TestCase(NumberBadFirstCheckDigit2)]
         [TestCase(NumberBadFirstCheckDigit3)]
@@ -135,6 +151,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadCheckDigit, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase(NumberBadSecondCheckDigit1)]
         [TestCase(NumberBadSecondCheckDigit2)]
         [TestCase(NumberBadSecondCheckDigit3)]
@@ -152,6 +169,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadCheckDigit, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase(NumberLegal)]
         public void Construct_Legal_PropertiesSet(string number)
         {
@@ -160,6 +178,7 @@ namespace UnitTest
             Assert.AreEqual(number, bn.Number);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase(NumberNull)]
         [TestCase(NumberEmpty)]
         [TestCase(NumberShort)]
@@ -202,6 +221,7 @@ namespace UnitTest
             Assert.IsNull(bn);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase(NumberLegal)]
         public void Create_Legal_ReturnsObjectWithPropertiesSet(string number)
         {
@@ -211,12 +231,14 @@ namespace UnitTest
             Assert.AreEqual(number, bn.Number);
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void OneRandom_ReturnsValidNumber()
         {
             Assert.DoesNotThrow(() => BirthNumber.OneRandom());
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void OneRandom_TwoCallsReturnsDifferentNumbers()
         {
@@ -227,6 +249,7 @@ namespace UnitTest
             Assert.AreNotEqual(birthNo1.Number, birthNo2.Number);
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void OneRandom_NullPattern_ThrowsException()
         {
@@ -236,6 +259,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.PatternIsNullOrEmpty, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void OneRandom_EmptyPattern_ThrowsException()
         {
@@ -245,6 +269,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.PatternIsNullOrEmpty, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase("??????????")]
         [TestCase("????????????")]
         public void OneRandom_BadLengthPattern_ThrowsException(string pattern)
@@ -255,6 +280,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadPatternLength, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase("C??????????")]
         [TestCase("?d?????????")]
         [TestCase("??Æ????????")]
@@ -269,6 +295,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadPattern, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void OneRandom_NoWildcardInPattern_ThrowsException()
         {
@@ -278,6 +305,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadPattern, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase("???????????")]
         [TestCase("31?????????")]
         [TestCase("??12???????")]
@@ -291,6 +319,7 @@ namespace UnitTest
             Assert.DoesNotThrow(() => BirthNumber.OneRandom(pattern));
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void OneRandom_BadFromDate_ThrowsException()
         {
@@ -300,6 +329,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadDate, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void OneRandom_BadToDate_ThrowsException()
         {
@@ -309,6 +339,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadDate, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [Test]
         public void OneRandom_FromDateLaterThanToDate_ThrowsException()
         {
@@ -318,6 +349,7 @@ namespace UnitTest
             Assert.AreEqual(Statuscode.BadDate, nex.Code);
         }
 
+        [Category(TestCategory.Fast)]
         [TestCase(GenderRequest.Female, 0)]
         [TestCase(GenderRequest.Male, 1)]
         public void OneRandom_SpecificGender_ReturnsOnlySpecifiedGender(GenderRequest gender, int expectedOddOrEven)
@@ -330,5 +362,41 @@ namespace UnitTest
                 Assert.AreEqual(expectedOddOrEven, oddOrEven);
             }
         }
+
+        #endregion Fast tests
+
+        #region Slow tests
+
+        [Category(TestCategory.Slow)]
+        [TestCase(123)]
+        [TestCase(987)]
+        public void ManyRandom_ReturnsRequestedNumber(int count)
+        {
+            List<BirthNumber> many = BirthNumber.ManyRandom(count).ToList();
+            Assert.IsNotNull(many);
+            Assert.AreEqual(count, many.Count);
+        }
+
+        [Category(TestCategory.Slow)]
+        [Test]
+        public void ManyRandom_TooManyRequested_ReturnsMaximumNumber()
+        {
+            List<BirthNumber> many = BirthNumber.ManyRandom(BirthNumber.PossibleLegalVariations + 123).ToList();
+            Assert.IsNotNull(many);
+            Assert.AreEqual(BirthNumber.PossibleLegalVariations, many.Count);
+        }
+
+        [Category(TestCategory.Slow)]
+        [Test]
+        public void AllPossible_ReturnsAllPossibleVariations()
+        {
+            List<BirthNumber> allPossible = BirthNumber.AllPossible().ToList();
+            Assert.IsNotNull(allPossible);
+            Assert.AreEqual(BirthNumber.PossibleLegalVariations, allPossible.Count);
+            Assert.AreEqual("01015450068", allPossible[0].Number);
+            Assert.AreEqual("31123999935", allPossible[BirthNumber.PossibleLegalVariations - 1].Number);
+        }
+
+        #endregion Slow tests
     }
 }

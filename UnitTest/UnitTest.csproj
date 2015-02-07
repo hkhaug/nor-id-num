@@ -45,6 +45,7 @@
     <Compile Include="DNumberTest.cs" />
     <Compile Include="OrganizationNumberTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestCategory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="nunit.framework">
