@@ -161,7 +161,7 @@ namespace NinEngine
         protected static string MakeIndividualNo(string pattern)
         {
             string result = String.Empty;
-            for (int index = 0; index < 3; ++index)
+            for (int index = 6; index < 9; ++index)
             {
                 if (Wildcard == pattern[index])
                 {

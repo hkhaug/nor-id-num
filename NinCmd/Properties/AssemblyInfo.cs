@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NinUi")]
+[assembly: AssemblyTitle("NinCmd")]
 [assembly: AssemblyDescription("Validate and generate norwegian identity numbers")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e6724db4-6bb7-4f9d-8e1b-ef5f7a57f68e")]
+[assembly: Guid("f88bd213-dada-4aff-ac5c-4a307c612394")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -130,7 +130,7 @@ namespace NinEngine
             for (int itemNo = 0; itemNo < count; ++itemNo)
             {
                 int itemIndex = Rand.Next(candidates.Count);
-                found.Add(candidates[itemNo]);
+                found.Add(candidates[itemIndex]);
                 candidates.RemoveAt(itemIndex);
             }
             return found;

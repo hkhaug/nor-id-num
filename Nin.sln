@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		References.txt = References.txt
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NinCmd", "NinCmd\NinCmd.csproj", "{55BC106C-6A5E-41C0-B251-85104ACD12BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{D44F46CC-6D32-414B-9213-BD249DD417FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D44F46CC-6D32-414B-9213-BD249DD417FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D44F46CC-6D32-414B-9213-BD249DD417FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55BC106C-6A5E-41C0-B251-85104ACD12BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55BC106C-6A5E-41C0-B251-85104ACD12BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55BC106C-6A5E-41C0-B251-85104ACD12BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55BC106C-6A5E-41C0-B251-85104ACD12BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
