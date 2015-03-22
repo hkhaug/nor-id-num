@@ -80,7 +80,7 @@ namespace NinEngine
             return result;
         }
 
-        public static DNumber OneRandom(DateTime dateFrom, DateTime dateTo, GenderRequest gender, int maxTryCount = DefaultRetryCount)
+        public static DNumber OneRandom(DateTime dateFrom, DateTime dateTo, GenderRequest gender = GenderRequest.Any, int maxTryCount = DefaultRetryCount)
         {
             DNumber result = null;
             for (int tryCounter = 0; tryCounter < maxTryCount; ++tryCounter)
@@ -93,6 +93,11 @@ namespace NinEngine
                 }
             }
             return result;
+        }
+
+        public static DNumber OneRandom(GenderRequest gender, int maxTryCount = DefaultRetryCount)
+        {
+            return OneRandom(FirstPossible, LastPossible, gender, maxTryCount);
         }
 
         public static IEnumerable<DNumber> ManyRandom(int count)
@@ -115,18 +120,18 @@ namespace NinEngine
         public static IEnumerable<DNumber> AllPossible()
         {
             List<DNumber> result = new List<DNumber>();
-            foreach (Range range in Ranges)
+            foreach (IndividualNumberProvider.RangeInfo rangeInfo in IndividualNumberProvider.RangeInfos)
             {
-                AddAllPossibleForRange(result, range);
+                AddAllPossibleForRange(result, rangeInfo);
             }
             return result;
         }
 
-        private static void AddAllPossibleForRange(ICollection<DNumber> birthNumbers, Range range)
+        private static void AddAllPossibleForRange(ICollection<DNumber> birthNumbers, IndividualNumberProvider.RangeInfo rangeInfo)
         {
-            for (int year = range.FromYear; year <= range.ToYear; ++year)
+            for (int year = rangeInfo.FromYear; year <= rangeInfo.ToYear; ++year)
             {
-                AddAllPossibleForYear(birthNumbers, year, range.FromIndividual, range.ToIndividual);
+                AddAllPossibleForYear(birthNumbers, year, rangeInfo.FromIndividual, rangeInfo.ToIndividual);
             }
         }
 

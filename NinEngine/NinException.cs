@@ -15,7 +15,8 @@ namespace NinEngine
         PatternIsNullOrEmpty,
         BadPatternLength,
         BadPattern,
-        NoMatchFound
+        NoMatchFound,
+        BadYear
     }
 
     public class NinException : Exception

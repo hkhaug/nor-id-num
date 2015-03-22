@@ -41,6 +41,7 @@
     <Compile Include="DateBasedIdNumber.cs" />
     <Compile Include="DNumber.cs" />
     <Compile Include="IdNumberBase.cs" />
+    <Compile Include="IndividualNumberProvider.cs" />
     <Compile Include="NinException.cs" />
     <Compile Include="OrganizationNumber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,14 +1,8 @@
 ﻿using System;
+using System.Linq;
 
 namespace NinEngine
 {
-    public enum GenderRequest
-    {
-        Any,
-        Female,
-        Male
-    };
-
     public abstract class DateBasedIdNumber : IdNumberBase
     {
         protected static readonly int[] WeightsForCheckDigit1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
@@ -48,27 +42,13 @@ namespace NinEngine
 
         protected int AssertYearAndIndividualNumberCombinationIsValid()
         {
-            int yy = Int32.Parse(Number.Substring(4, 2));
-            int individual = Int32.Parse(Number.Substring(6, 3));
+            int twoDigitYear = Int32.Parse(Number.Substring(4, 2));
+            int individualNumber = Int32.Parse(Number.Substring(6, 3));
+            int fourDigitYear = IndividualNumberProvider.GetYearWithCentury(twoDigitYear, individualNumber);
 
-            if (individual <= 499)
+            if (fourDigitYear > 0)
             {
-                return 1900 + yy;
-            }
-
-            if (individual <= 749 && yy >= 54)
-            {
-                return 1800 + yy;
-            }
-
-            if (individual >= 900 && yy >= 40)
-            {
-                return 1900 + yy;
-            }
-
-            if (yy <= 39)
-            {
-                return 2000 + yy;
+                return fourDigitYear;
             }
 
             string msg = String.Format("{0} '{1}' har ikke en gyldig kombinasjon av årstall og individnummer.", Name, Number);
@@ -89,8 +69,8 @@ namespace NinEngine
 
         protected static string OneRandomNumber(AdjustNumber adjustMethod = null)
         {
-            string date = DateInRange(FirstPossible, LastPossible);
-            string number = OneRandomNumber(date, () => Rand.Next(1000), adjustMethod);
+            DateTime date = DateInRange(FirstPossible, LastPossible);
+            string number = OneRandomNumber(date, GenderRequest.Any, adjustMethod);
             return number;
         }
 
@@ -111,21 +91,8 @@ namespace NinEngine
                 string msg = String.Format("Fra-dato ({0}) kan ikke være senere enn til-dato ({1}).", dateFrom, dateTo);
                 throw new NinException(Statuscode.BadDate, msg);
             }
-            string date = DateInRange(dateFrom, dateTo);
-            GetIndividualNumber getIndividualMethod;
-            switch (gender)
-            {
-                case GenderRequest.Female:
-                    getIndividualMethod = () => Rand.Next(500) * 2;
-                    break;
-                case GenderRequest.Male:
-                    getIndividualMethod = () => Rand.Next(500) * 2 + 1;
-                    break;
-                default:
-                    getIndividualMethod = () => Rand.Next(1000);
-                    break;
-            }
-            string number = OneRandomNumber(date, getIndividualMethod, adjustMethod);
+            DateTime date = DateInRange(dateFrom, dateTo);
+            string number = OneRandomNumber(date, gender, adjustMethod);
             return number;
         }
 
@@ -134,7 +101,7 @@ namespace NinEngine
             string result;
             if (pattern.StartsWith("??????"))
             {
-                result = DateInRange(FirstPossible, LastPossible);
+                result = DateStr(DateInRange(FirstPossible, LastPossible));
             }
             else
             {
@@ -185,10 +152,9 @@ namespace NinEngine
             return Wildcard == pattern[10] ? Modulo11(WeightsForCheckDigit2, number) : pattern[10];
         }
 
-        private delegate int GetIndividualNumber();
-
-        private static string OneRandomNumber(string date, GetIndividualNumber getIndividualMethod, AdjustNumber adjustMethod)
+        private static string OneRandomNumber(DateTime date, GenderRequest gender, AdjustNumber adjustMethod)
         {
+            string dateStr = DateStr(date);
             string number;
             char checkDigit2;
             do
@@ -196,8 +162,8 @@ namespace NinEngine
                 char checkDigit1;
                 do
                 {
-                    int individualNo = getIndividualMethod();
-                    number = String.Format("{0}{1:000}", date, individualNo);
+                    int individualNo = GetIndividualNumber(date.Year, gender);
+                    number = String.Format("{0}{1:000}", dateStr, individualNo);
                     if (adjustMethod != null)
                     {
                         number = adjustMethod(number);
@@ -211,24 +177,22 @@ namespace NinEngine
             return number;
         }
 
-        private static string DateInRange(DateTime from, DateTime to)
+        private static DateTime DateInRange(DateTime dateFrom, DateTime dateTo)
         {
-            int days = (to - @from).Days + 1;
-            DateTime date = @from.AddDays(Rand.Next(days));
+            int days = (dateTo - dateFrom).Days + 1;
+            return dateFrom.AddDays(Rand.Next(days));
+        }
+
+        private static string DateStr(DateTime date)
+        {
             return String.Format("{0:ddMMyy}", date);
         }
 
-        protected struct Range
+        private static int GetIndividualNumber(int year, GenderRequest gender)
         {
-            public int FromYear, ToYear, FromIndividual, ToIndividual;
+            int[] legalNumbers = IndividualNumberProvider.GetLegalNumbers(year, gender).ToArray();
+            int index = Rand.Next(legalNumbers.Length);
+            return legalNumbers[index];
         }
-
-        protected static Range[] Ranges =
-        {
-            new Range {FromYear = 1854, ToYear = 1899, FromIndividual = 500, ToIndividual = 749},
-            new Range {FromYear = 1900, ToYear = 1999, FromIndividual = 000, ToIndividual = 499},
-            new Range {FromYear = 1940, ToYear = 1999, FromIndividual = 900, ToIndividual = 999},
-            new Range {FromYear = 2000, ToYear = 2039, FromIndividual = 500, ToIndividual = 999}
-        };
     }
 }

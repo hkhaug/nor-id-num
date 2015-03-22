@@ -75,7 +75,7 @@ namespace NinEngine
             return result;
         }
 
-        public static BirthNumber OneRandom(DateTime dateFrom, DateTime dateTo, GenderRequest gender, int maxTryCount = DefaultRetryCount)
+        public static BirthNumber OneRandom(DateTime dateFrom, DateTime dateTo, GenderRequest gender = GenderRequest.Any, int maxTryCount = DefaultRetryCount)
         {
             BirthNumber result = null;
             for (int tryCounter = 0; tryCounter < maxTryCount; ++tryCounter)
@@ -88,6 +88,11 @@ namespace NinEngine
                 }
             }
             return result;
+        }
+
+        public static BirthNumber OneRandom(GenderRequest gender, int maxTryCount = DefaultRetryCount)
+        {
+            return OneRandom(FirstPossible, LastPossible, gender, maxTryCount);
         }
 
         public static IEnumerable<BirthNumber> ManyRandom(int count)
@@ -110,18 +115,18 @@ namespace NinEngine
         public static IEnumerable<BirthNumber> AllPossible()
         {
             List<BirthNumber> result = new List<BirthNumber>();
-            foreach (Range range in Ranges)
+            foreach (IndividualNumberProvider.RangeInfo rangeInfo in IndividualNumberProvider.RangeInfos)
             {
-                AddAllPossibleForRange(result, range);
+                AddAllPossibleForRange(result, rangeInfo);
             }
             return result;
         }
 
-        private static void AddAllPossibleForRange(ICollection<BirthNumber> birthNumbers, Range range)
+        private static void AddAllPossibleForRange(ICollection<BirthNumber> birthNumbers, IndividualNumberProvider.RangeInfo rangeInfo)
         {
-            for (int year = range.FromYear; year <= range.ToYear; ++year)
+            for (int year = rangeInfo.FromYear; year <= rangeInfo.ToYear; ++year)
             {
-                AddAllPossibleForYear(birthNumbers, year, range.FromIndividual, range.ToIndividual);
+                AddAllPossibleForYear(birthNumbers, year, rangeInfo.FromIndividual, rangeInfo.ToIndividual);
             }
         }
 

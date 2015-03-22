@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NinEngine;
 using NUnit.Framework;
@@ -323,7 +324,7 @@ namespace UnitTest
         [Test]
         public void OneRandom_BadFromDate_ThrowsException()
         {
-            var ex = Assert.Throws(typeof(NinException), () => DNumber.OneRandom(DateBasedIdNumber.FirstPossible.AddDays(-1), DateBasedIdNumber.LastPossible, GenderRequest.Any));
+            var ex = Assert.Throws(typeof(NinException), () => DNumber.OneRandom(DateBasedIdNumber.FirstPossible.AddDays(-1), DateBasedIdNumber.LastPossible));
             NinException nex = ex as NinException;
             Assert.IsNotNull(nex);
             Assert.AreEqual(Statuscode.BadDate, nex.Code);
@@ -333,7 +334,7 @@ namespace UnitTest
         [Test]
         public void OneRandom_BadToDate_ThrowsException()
         {
-            var ex = Assert.Throws(typeof(NinException), () => DNumber.OneRandom(DateBasedIdNumber.FirstPossible, DateBasedIdNumber.LastPossible.AddDays(1), GenderRequest.Any));
+            var ex = Assert.Throws(typeof(NinException), () => DNumber.OneRandom(DateBasedIdNumber.FirstPossible, DateBasedIdNumber.LastPossible.AddDays(1)));
             NinException nex = ex as NinException;
             Assert.IsNotNull(nex);
             Assert.AreEqual(Statuscode.BadDate, nex.Code);
@@ -343,7 +344,7 @@ namespace UnitTest
         [Test]
         public void OneRandom_FromDateLaterThanToDate_ThrowsException()
         {
-            var ex = Assert.Throws(typeof(NinException), () => DNumber.OneRandom(DateBasedIdNumber.LastPossible, DateBasedIdNumber.FirstPossible, GenderRequest.Any));
+            var ex = Assert.Throws(typeof(NinException), () => DNumber.OneRandom(DateBasedIdNumber.LastPossible, DateBasedIdNumber.FirstPossible));
             NinException nex = ex as NinException;
             Assert.IsNotNull(nex);
             Assert.AreEqual(Statuscode.BadDate, nex.Code);
@@ -360,6 +361,28 @@ namespace UnitTest
                 Assert.IsNotNull(dNo);
                 int oddOrEven = dNo.Number[8] & 1;
                 Assert.AreEqual(expectedOddOrEven, oddOrEven);
+            }
+        }
+
+        [Category(TestCategory.Fast)]
+        [TestCase(GenderRequest.Any)]
+        [TestCase(GenderRequest.Female)]
+        [TestCase(GenderRequest.Male)]
+        public void OneRandom_SpecificYear_ReturnsValidIndividualNumber(GenderRequest gender)
+        {
+            int firstYear = DateBasedIdNumber.FirstPossible.Year;
+            int lastYear = DateBasedIdNumber.LastPossible.Year;
+            for (int year = firstYear; year < lastYear; ++year)
+            {
+                IEnumerable<int> legalIndividualNumbers = IndividualNumberProvider.GetLegalNumbers(year, gender);
+                DateTime dateFrom = new DateTime(year, 1, 1);
+                DateTime dateTo = new DateTime(year, 12, 31);
+                DNumber dNumber = DNumber.OneRandom(dateFrom, dateTo, gender);
+                if (null != dNumber)
+                {
+                    int individualNumber = int.Parse(dNumber.Number.Substring(6, 3));
+                    Assert.IsTrue(legalIndividualNumbers.Contains(individualNumber));
+                }
             }
         }
 
