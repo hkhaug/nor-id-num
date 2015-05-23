@@ -150,5 +150,15 @@ namespace NinEngine
             }
             return result;
         }
+
+        public static IEnumerable<OrganizationNumber> QuickManyRandom(int count)
+        {
+            List<OrganizationNumber> result = new List<OrganizationNumber>();
+            for (int itemNo = 0; itemNo < count; ++itemNo)
+            {
+                result.Add(OneRandom());
+            }
+            return result;
+        }
     }
 }

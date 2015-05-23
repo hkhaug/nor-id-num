@@ -386,6 +386,16 @@ namespace UnitTest
             }
         }
 
+        [Category(TestCategory.Fast)]
+        [TestCase(123)]
+        [TestCase(987)]
+        public void QuickManyRandom_ReturnsRequestedNumber(int count)
+        {
+            List<DNumber> many = DNumber.QuickManyRandom(count).ToList();
+            Assert.IsNotNull(many);
+            Assert.AreEqual(count, many.Count);
+        }
+
         #endregion Fast tests
 
         #region Slow tests

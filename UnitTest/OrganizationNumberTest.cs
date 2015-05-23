@@ -274,6 +274,16 @@ namespace UnitTest
             Assert.DoesNotThrow(() => OrganizationNumber.OneRandom(pattern));
         }
 
+        [Category(TestCategory.Fast)]
+        [TestCase(123)]
+        [TestCase(987)]
+        public void QuickManyRandom_ReturnsRequestedNumber(int count)
+        {
+            List<OrganizationNumber> many = OrganizationNumber.QuickManyRandom(count).ToList();
+            Assert.IsNotNull(many);
+            Assert.AreEqual(count, many.Count);
+        }
+
         #endregion Fast tests
 
         #region Slow tests

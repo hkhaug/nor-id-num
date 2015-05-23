@@ -159,5 +159,15 @@ namespace NinEngine
                 }
             }
         }
+
+        public static IEnumerable<BirthNumber> QuickManyRandom(int count)
+        {
+            List<BirthNumber> result = new List<BirthNumber>();
+            for (int itemNo = 0; itemNo < count; ++itemNo)
+            {
+                result.Add(OneRandom());
+            }
+            return result;
+        }
     }
 }

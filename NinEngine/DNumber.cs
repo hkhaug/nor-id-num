@@ -164,5 +164,15 @@ namespace NinEngine
                 }
             }
         }
+
+        public static IEnumerable<DNumber> QuickManyRandom(int count)
+        {
+            List<DNumber> result = new List<DNumber>();
+            for (int itemNo = 0; itemNo < count; ++itemNo)
+            {
+                result.Add(OneRandom());
+            }
+            return result;
+        }
     }
 }
