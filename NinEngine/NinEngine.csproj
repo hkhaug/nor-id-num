@@ -9,5 +9,6 @@
 		<PackageId>nor-id-num</PackageId>
 		<Authors>Hans Kristian Haug</Authors>
 		<Company />
+		<PackageProjectUrl>https://github.com/hkhaug/nor-id-num</PackageProjectUrl>
 	</PropertyGroup>
 </Project>
