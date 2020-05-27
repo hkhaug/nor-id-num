@@ -6,5 +6,8 @@
 		<Product>Norwegian Identity Numbers</Product>
 		<Copyright>Copyright © 2014, 2015 Hans Kristian Haug</Copyright>
 		<NeutralLanguage>en</NeutralLanguage>
+		<PackageId>nor-id-num</PackageId>
+		<Authors>Hans Kristian Haug</Authors>
+		<Company />
 	</PropertyGroup>
 </Project>
