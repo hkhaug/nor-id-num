@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 
 
-namespace Agresso.No.HN60.Shared
+namespace NinEngine
 {
     /// <summary>
     /// http://no.wikipedia.org/wiki/F%C3%B8dselsnummer
-    /// http://person.no/
-    /// http://www.uib.no/researchermobility/living/national-identity-number-or-d-number
-    /// http://www.brreg.no/samordning/organisasjonsnummeret.html
     /// dd = day part of birth date
     /// mm = month part of birth date
     /// yy = year part of birth date
