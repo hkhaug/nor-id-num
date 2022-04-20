@@ -6,5 +6,6 @@
         public static bool IsValidOrganisasjonsnummer(this string number) => NorwegianIdentity.IsValidOrganisasjonsnummer(number);
         public static bool IsValidFoedselsnummer(this string ddmmyyiiicc) => NorwegianIdentity.IsValidFoedselsnummer(ddmmyyiiicc);
         public static bool IsValidDummyNumber(this string ddmmyyiiicc) => NorwegianIdentity.IsValidDummyNumber(ddmmyyiiicc);
+        public static bool IsValidSyntheticNumber(this string ddmmyyiiicc) => NorwegianIdentity.IsValidSyntheticNumber(ddmmyyiiicc);
     }
 }
