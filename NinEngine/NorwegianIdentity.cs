@@ -22,7 +22,7 @@ namespace NinEngine
 
         public static bool IsValidNorwegianIdentity(string number)
         {
-            return !string.IsNullOrEmpty(number) && (IsValidOrganisasjonsnummer(number) || IsValidFoedselsnummer(number) || IsValidDummyNumber(number));
+            return !string.IsNullOrEmpty(number) && (IsValidOrganisasjonsnummer(number) || IsValidFoedselsnummer(number) || IsValidDummyNumber(number) || IsValidSyntheticNumber(number));
         }
 
 
@@ -40,44 +40,58 @@ namespace NinEngine
 
         public static bool IsValidFoedselsnummer(string ddmmyyiiicc)
         {
-            return IsValidFoedselsnummerOrDummyNumber(ddmmyyiiicc, false);
+            return IsValidFoedselsnummer(ddmmyyiiicc, NumberType.Normal);
         }
 
 
         public static bool IsValidDummyNumber(string ddmmyyiiicc)
         {
-            return IsValidFoedselsnummerOrDummyNumber(ddmmyyiiicc, true);
+            return IsValidFoedselsnummer(ddmmyyiiicc, NumberType.Dummy);
+        }
+
+        public static bool IsValidSyntheticNumber(string ddmmyyiiicc)
+        {
+            return IsValidFoedselsnummer(ddmmyyiiicc, NumberType.Synthetic);
         }
 
 
-        private static bool IsValidFoedselsnummerOrDummyNumber(string ddmmyyiiicc, bool isDummyNumber)
+        private static bool IsValidFoedselsnummer(string ddmmyyiiicc, NumberType numberType)
         {
             if (string.IsNullOrEmpty(ddmmyyiiicc) || ddmmyyiiicc.Length != NationalIdentityNumberFormat.Length)
             {
                 return false;
             }
 
-            return IsValidConsideringCheckDigits(ddmmyyiiicc, isDummyNumber);
+            return IsValidConsideringCheckDigits(ddmmyyiiicc, numberType);
         }
 
 
-        private static bool IsValidConsideringCheckDigits(string ddmmyyiiicc, bool isDummyNumber)
+        private static bool IsValidConsideringCheckDigits(string ddmmyyiiicc, NumberType numberType)
         {
             char checkDigit = Modulo11(WeightsForCheckDigit1InFoedselsnummer, ddmmyyiiicc);
-            return checkDigit == ddmmyyiiicc[9] && IsValidConsideringCheckDigit2(ddmmyyiiicc, isDummyNumber);
+            return checkDigit == ddmmyyiiicc[9] && IsValidConsideringCheckDigit2(ddmmyyiiicc, numberType);
         }
 
 
-        private static bool IsValidConsideringCheckDigit2(string ddmmyyiiicc, bool isDummyNumber)
+        private static bool IsValidConsideringCheckDigit2(string ddmmyyiiicc, NumberType numberType)
         {
             char checkDigit = Modulo11(WeightsForCheckDigit2InFoedselsnummer, ddmmyyiiicc);
-            return checkDigit == ddmmyyiiicc[10] && HasValidDate(ddmmyyiiicc, isDummyNumber);
+            return checkDigit == ddmmyyiiicc[10] && HasValidDate(ddmmyyiiicc, numberType);
         }
 
 
-        private static bool HasValidDate(string ddmmyyiiicc, bool isDummyNumber)
+        private static bool HasValidDate(string ddmmyyiiicc, NumberType numberType)
         {
-            int dd = int.Parse(ddmmyyiiicc.Substring(0, 2)) - (isDummyNumber ? 40 : 0);
+            int dd = int.Parse(ddmmyyiiicc.Substring(0, 2));
+            switch (numberType)
+            {
+                case NumberType.Dummy:
+                    dd -= 40;
+                    break;
+                case NumberType.Synthetic:
+                    dd -= 80;
+                    break;
+            }
             return HasValidDate(ddmmyyiiicc, dd);
         }
 
